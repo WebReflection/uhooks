@@ -6,6 +6,8 @@ let schedule = new Set;
 
 const hooks = new WeakMap;
 
+const waitTick = new Lie($ => $());
+
 const invoke = fx => {
   if (typeof fx.r === 'function')
     fx.r();
@@ -20,7 +22,6 @@ const runSchedule = () => {
 
 export const effects = [];
 export const layoutEffects = [];
-export const waitTick = new Lie($ => $());
 
 export function different(value, i) {
   return value !== this[i];

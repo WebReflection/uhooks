@@ -24,6 +24,9 @@ self.uhooks = (function (exports) {
       h = null;
   var schedule = new Set();
   var hooks = new WeakMap();
+  var waitTick = new Lie(function ($) {
+    return $();
+  });
 
   var invoke = function invoke(fx) {
     if (typeof fx.r === 'function') fx.r();
@@ -38,9 +41,6 @@ self.uhooks = (function (exports) {
 
   var effects = [];
   var layoutEffects = [];
-  var waitTick = new Lie(function ($) {
-    return $();
-  });
   function different(value, i) {
     return value !== this[i];
   }
