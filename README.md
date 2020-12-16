@@ -2,7 +2,18 @@
 
 [![Build Status](https://travis-ci.com/WebReflection/uhooks.svg?branch=main)](https://travis-ci.com/WebReflection/uhooks) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/uhooks/badge.svg?branch=main)](https://coveralls.io/github/WebReflection/uhooks?branch=main)
 
-_micro hooks_ is a simplified _~0.8K_ alternative to [augmentor](https://github.com/WebReflection/augmentor#readme) with the same API but async by default and not configurable in any way.
+![hooks](./uhooks.jpg)
+
+<sup>**Social Media Photo by [Tatiana Rodriguez](https://unsplash.com/@tata186) on [Unsplash](https://unsplash.com/)**</sup>
+
+_micro hooks_ is a simplified _~0.8K_ alternative to [augmentor](https://github.com/WebReflection/augmentor#readme), with the following differences:
+
+  * `hooked(fn)` is the *augmentor* entry point equivalent
+  * multiple states update are applied at once asynchronously <sup><sub>(these are a *Promise.then(...)* away)</sub><sup>
+  * `useEffect` is also applied asynchronously
+  * there are no extra options whatsoever so it's less configurable
+
+The reason for this module to exist is to explore a slightly different pattern that is *not* stack-based, but that should perform overall better in real-world use cases, thanks to its smaller size and its reduced amount of invokes applied in bulks.
 
 ```js
 // <script type="module"> import('//unpkg.com/uhooks?module') for ESM
@@ -27,8 +38,10 @@ const Counter = (start) => {
   return current;
 };
 
-// logs 1
-const comp = hooked(Counter)(1);
+// logs 1, 1
+const comp1 = hooked(Counter)(1);
+const comp2 = hooked(Counter)(1);
+
 // logs 2
-comp.increment();
+comp1.increment();
 ```
