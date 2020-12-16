@@ -1,6 +1,6 @@
 {
   "name": "uhooks",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "micro hooks: a minimalistic client/server hooks' implementation",
   "main": "./cjs/index.js",
   "scripts": {
