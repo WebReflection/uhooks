@@ -22,7 +22,7 @@ The reason for this module to exist is to explore a slightly different pattern t
 // const {...} = require('uhooks'); for CommonJS
 
 import {
-  hooked,
+  hooked, dropEffect, hasEffect,
   createContext, useContext,
   useCallback, useMemo,
   useEffect, useLayoutEffect,

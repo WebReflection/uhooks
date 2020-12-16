@@ -8,10 +8,14 @@ const hooks = new WeakMap;
 
 const waitTick = new Lie($ => $());
 
-const invoke = fx => {
-  if (typeof fx.r === 'function')
-    fx.r();
-  fx.r = fx.$();
+const invoke = effect => {
+  const {$, r, h} = effect;
+  if (isFunction(r)) {
+    fx.get(h).delete(r);
+    r();
+  }
+  if (isFunction(effect.r = $()))
+    fx.get(h).add(effect.r);
 };
 
 const runSchedule = () => {
@@ -20,11 +24,18 @@ const runSchedule = () => {
   previous.forEach(update);
 };
 
+export const fx = new WeakMap;
 export const effects = [];
 export const layoutEffects = [];
 
 export function different(value, i) {
   return value !== this[i];
+};
+
+export const dropEffect = hook => {
+  waitTick.then(() => {
+    (fx.get(hook) || []).forEach(r => { r(); });
+  });
 };
 
 export const getInfo = () => {
@@ -33,6 +44,10 @@ export const getInfo = () => {
   info.c = c;
   return info;
 };
+
+export const hasEffect = hook => fx.has(hook);
+
+export const isFunction = f => typeof f === 'function';
 
 export const hooked = callback => {
   hooks.set(hook, {a, c, h: hook, i: 0, s: []});

@@ -1,13 +1,13 @@
-import {getInfo, reschedule} from './hooks.js';
+import {getInfo, isFunction, reschedule} from './hooks.js';
 
-const getValue = (value, f) => typeof f == 'function' ? f(value) : f;
+const getValue = (value, f) => isFunction(f) ? f(value) : f;
 
 export const useReducer = (reducer, value, init) => {
   const info = getInfo();
   const {i, s} = info;
   if (i === s.length)
     s.push({
-      $: typeof init === 'function' ?
+      $: isFunction(init) ?
           init(value) : getValue(void 0, value),
       set: value => {
         s[i].$ = reducer(s[i].$, value);

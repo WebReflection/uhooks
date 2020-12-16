@@ -3,6 +3,8 @@
 
 (m => {
   exports.hooked = m.hooked;
+  exports.dropEffect = m.dropEffect;
+  exports.hasEffect = m.hasEffect;
 })(require('./hooks.js'));
 (m => {
   exports.createContext = m.createContext;

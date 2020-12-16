@@ -1,15 +1,18 @@
 'use strict';
-const {different, effects, getInfo, layoutEffects} = require('./hooks.js');
+const {fx, effects, layoutEffects, different, getInfo} = require('./hooks.js');
 
 const createEffect = stack => (callback, guards) => {
   const info = getInfo();
-  const {i, s} = info;
+  const {i, s, h} = info;
   const call = i === s.length;
-  if (call)
-    s.push({$: callback, _: guards, r: void 0});
-  const fx = s[info.i++];
-  if (call || !guards || guards.some(different, fx._))
-    stack.push(fx);
+  if (call) {
+    if (!fx.has(h))
+      fx.set(h, new Set);
+    s.push({$: callback, _: guards, r: null, h});
+  }
+  const effect = s[info.i++];
+  if (call || !guards || guards.some(different, effect._))
+    stack.push(effect);
 };
 
 const useEffect = createEffect(effects);

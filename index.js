@@ -28,9 +28,17 @@ self.uhooks = (function (exports) {
     return $();
   });
 
-  var invoke = function invoke(fx) {
-    if (typeof fx.r === 'function') fx.r();
-    fx.r = fx.$();
+  var invoke = function invoke(effect) {
+    var $ = effect.$,
+        r = effect.r,
+        h = effect.h;
+
+    if (isFunction(r)) {
+      fx.get(h)["delete"](r);
+      r();
+    }
+
+    if (isFunction(effect.r = $())) fx.get(h).add(effect.r);
   };
 
   var runSchedule = function runSchedule() {
@@ -39,16 +47,30 @@ self.uhooks = (function (exports) {
     previous.forEach(update);
   };
 
+  var fx = new WeakMap();
   var effects = [];
   var layoutEffects = [];
   function different(value, i) {
     return value !== this[i];
   }
+  var dropEffect = function dropEffect(hook) {
+    waitTick.then(function () {
+      (fx.get(hook) || []).forEach(function (r) {
+        r();
+      });
+    });
+  };
   var getInfo = function getInfo() {
     var info = hooks.get(h);
     info.a = a;
     info.c = c;
     return info;
+  };
+  var hasEffect = function hasEffect(hook) {
+    return fx.has(hook);
+  };
+  var isFunction = function isFunction(f) {
+    return typeof f === 'function';
   };
   var hooked = function hooked(callback) {
     hooks.set(hook, {
@@ -141,15 +163,22 @@ self.uhooks = (function (exports) {
     return function (callback, guards) {
       var info = getInfo();
       var i = info.i,
-          s = info.s;
+          s = info.s,
+          h = info.h;
       var call = i === s.length;
-      if (call) s.push({
-        $: callback,
-        _: guards,
-        r: void 0
-      });
-      var fx = s[info.i++];
-      if (call || !guards || guards.some(different, fx._)) stack.push(fx);
+
+      if (call) {
+        if (!fx.has(h)) fx.set(h, new Set());
+        s.push({
+          $: callback,
+          _: guards,
+          r: null,
+          h: h
+        });
+      }
+
+      var effect = s[info.i++];
+      if (call || !guards || guards.some(different, effect._)) stack.push(effect);
     };
   };
 
@@ -157,7 +186,7 @@ self.uhooks = (function (exports) {
   var useLayoutEffect = createEffect(layoutEffects);
 
   var getValue = function getValue(value, f) {
-    return typeof f == 'function' ? f(value) : f;
+    return isFunction(f) ? f(value) : f;
   };
 
   var useReducer = function useReducer(reducer, value, init) {
@@ -165,7 +194,7 @@ self.uhooks = (function (exports) {
     var i = info.i,
         s = info.s;
     if (i === s.length) s.push({
-      $: typeof init === 'function' ? init(value) : getValue(void 0, value),
+      $: isFunction(init) ? init(value) : getValue(void 0, value),
       set: function set(value) {
         s[i].$ = reducer(s[i].$, value);
         reschedule(info);
@@ -191,6 +220,8 @@ self.uhooks = (function (exports) {
   };
 
   exports.createContext = createContext;
+  exports.dropEffect = dropEffect;
+  exports.hasEffect = hasEffect;
   exports.hooked = hooked;
   exports.useCallback = useCallback;
   exports.useContext = useContext;

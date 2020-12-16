@@ -1,5 +1,6 @@
 const {
   hooked,
+  hasEffect, dropEffect,
   createContext, useContext,
   useCallback, useMemo,
   useEffect, useLayoutEffect,
@@ -87,23 +88,27 @@ comp.increment();
   hooked(test)();
 
   let i = 0;
-  test = function () {
+  test = hooked(function () {
     const [value, update] = useState(() => 0);
     useEffect(() => {
       console.assert(i++ === 0);
+      return () => { console.log('dropEffect'); };
     }, []);
     if (value === 0)
       update(1);
-  };
-  hooked(test)();
+  });
+  test();
+  console.assert(hasEffect(test));
+  dropEffect(test);
 
-  test = function () {
+  test = hooked(function () {
     const [count, setCount] = useState(0);
     const handleCount = useCallback(() => setCount(count + 1), [count]);
     if (count === 0)
       handleCount();
-  };
-  hooked(test)();
+  });
+  test();
+  dropEffect(test);
 
   test = function () {
     const [count, setCount] = useState(0);
