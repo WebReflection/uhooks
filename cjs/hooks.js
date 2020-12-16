@@ -12,11 +12,11 @@ const waitTick = new Lie($ => $());
 const invoke = effect => {
   const {$, r, h} = effect;
   if (isFunction(r)) {
-    fx.get(h).delete(r);
+    fx.get(h).delete(effect);
     r();
   }
   if (isFunction(effect.r = $()))
-    fx.get(h).add(effect.r);
+    fx.get(h).add(effect);
 };
 
 const runSchedule = () => {
@@ -38,9 +38,15 @@ function different(value, i) {
 exports.different = different;
 
 const dropEffect = hook => {
-  waitTick.then(() => {
-    (fx.get(hook) || []).forEach(r => { r(); });
-  });
+  const effects = fx.get(hook);
+  if (effects)
+    waitTick.then(() => {
+      effects.forEach(effect => {
+        effect.r();
+        effect.r = null;
+      });
+      effects.clear();
+    });
 };
 exports.dropEffect = dropEffect;
 

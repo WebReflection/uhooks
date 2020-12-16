@@ -34,11 +34,11 @@ self.uhooks = (function (exports) {
         h = effect.h;
 
     if (isFunction(r)) {
-      fx.get(h)["delete"](r);
+      fx.get(h)["delete"](effect);
       r();
     }
 
-    if (isFunction(effect.r = $())) fx.get(h).add(effect.r);
+    if (isFunction(effect.r = $())) fx.get(h).add(effect);
   };
 
   var runSchedule = function runSchedule() {
@@ -54,10 +54,13 @@ self.uhooks = (function (exports) {
     return value !== this[i];
   }
   var dropEffect = function dropEffect(hook) {
-    waitTick.then(function () {
-      (fx.get(hook) || []).forEach(function (r) {
-        r();
+    var effects = fx.get(hook);
+    if (effects) waitTick.then(function () {
+      effects.forEach(function (effect) {
+        effect.r();
+        effect.r = null;
       });
+      effects.clear();
     });
   };
   var getInfo = function getInfo() {
