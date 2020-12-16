@@ -22,11 +22,18 @@ self.uhooks = (function (exports) {
   var a = null,
       c = null,
       h = null;
+  var schedule = new Set();
   var hooks = new WeakMap();
 
   var invoke = function invoke(fx) {
     if (typeof fx.r === 'function') fx.r();
     fx.r = fx.$();
+  };
+
+  var runSchedule = function runSchedule() {
+    var previous = schedule;
+    schedule = new Set();
+    previous.forEach(update);
   };
 
   var effects = [];
@@ -67,21 +74,16 @@ self.uhooks = (function (exports) {
         a = pa;
         c = pc;
         h = ph;
-
-        if (effects.length) {
-          var fx = effects.splice(0);
-          waitTick.then(fx.forEach.bind(fx, invoke));
-        }
-
+        if (effects.length) waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
         if (layoutEffects.length) layoutEffects.splice(0).forEach(invoke);
       }
     }
   };
-  var schedule = new Set();
-  var runSchedule = function runSchedule() {
-    var previous = schedule;
-    schedule = new Set();
-    previous.forEach(update);
+  var reschedule = function reschedule(info) {
+    if (!schedule.has(info)) {
+      schedule.add(info);
+      waitTick.then(runSchedule);
+    }
   };
   var update = function update(info) {
     info.i = 0;
@@ -166,11 +168,7 @@ self.uhooks = (function (exports) {
       $: typeof init === 'function' ? init(value) : getValue(void 0, value),
       set: function set(value) {
         s[i].$ = reducer(s[i].$, value);
-
-        if (!schedule.has(info)) {
-          schedule.add(info);
-          waitTick.then(runSchedule);
-        }
+        reschedule(info);
       }
     });
     var _s$info$i = s[info.i++],

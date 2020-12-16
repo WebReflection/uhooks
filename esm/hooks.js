@@ -2,12 +2,20 @@ import Lie from '@webreflection/lie';
 
 let a = null, c = null, h = null;
 
+let schedule = new Set;
+
 const hooks = new WeakMap;
 
 const invoke = fx => {
   if (typeof fx.r === 'function')
     fx.r();
   fx.r = fx.$();
+};
+
+const runSchedule = () => {
+  const previous = schedule;
+  schedule = new Set;
+  previous.forEach(update);
 };
 
 export const effects = [];
@@ -38,21 +46,19 @@ export const hooked = callback => {
     }
     finally {
       a = pa; c = pc; h = ph;
-      if (effects.length) {
-        const fx = effects.splice(0);
-        waitTick.then(fx.forEach.bind(fx, invoke));
-      }
+      if (effects.length)
+        waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
       if (layoutEffects.length)
         layoutEffects.splice(0).forEach(invoke);
     }
   }
 };
 
-export let schedule = new Set;
-export const runSchedule = () => {
-  const previous = schedule;
-  schedule = new Set;
-  previous.forEach(update);
+export const reschedule = info => {
+  if (!schedule.has(info)) {
+    schedule.add(info);
+    waitTick.then(runSchedule);
+  }
 };
 
 export const update = info => {
