@@ -1,20 +1,25 @@
 'use strict';
 /*! (c) Andrea Giammarchi - ISC */
 
-const {hooked} = require('./hooks.js');
-const {createContext, useContext} = require('./context.js');
-const {useCallback, useMemo} = require('./memo.js');
-const {useEffect, useLayoutEffect} = require('./effect.js');
-const {useReducer, useState} = require('./reducer.js');
-const {useRef} = require('./ref.js');
-
-exports.hooked = hooked;
-exports.createContext = createContext;
-exports.useContext = useContext;
-exports.useCallback = useCallback;
-exports.useMemo = useMemo;
-exports.useEffect = useEffect;
-exports.useLayoutEffect = useLayoutEffect;
-exports.useReducer = useReducer;
-exports.useState = useState;
-exports.useRef = useRef;
+(m => {
+  exports.hooked = m.hooked;
+})(require('./hooks.js'));
+(m => {
+  exports.createContext = m.createContext;
+  exports.useContext = m.useContext;
+})(require('./context.js'));
+(m => {
+  exports.useCallback = m.useCallback;
+  exports.useMemo = m.useMemo;
+})(require('./memo.js'));
+(m => {
+  exports.useEffect = m.useEffect;
+  exports.useLayoutEffect = m.useLayoutEffect;
+})(require('./effect.js'));
+(m => {
+  exports.useReducer = m.useReducer;
+  exports.useState = m.useState;
+})(require('./reducer.js'));
+(m => {
+  exports.useRef = m.useRef;
+})(require('./ref.js'));
