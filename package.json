@@ -4,13 +4,15 @@
   "description": "micro hooks: a minimalistic client/server hooks' implementation",
   "main": "./cjs/index.js",
   "scripts": {
-    "build": "npm run cjs && npm run rollup:es && npm run rollup:babel && npm run min && npm run test && npm run size",
+    "build": "npm run cjs && npm run rollup:babel && npm run rollup:dom && npm run rollup:es && npm run rollup:esdom && npm run min && npm run test && npm run size",
     "cjs": "ascjs esm cjs",
-    "rollup:es": "rollup --config rollup/es.config.js && sed -i.bck 's/^var /self./' es.js && rm -rf es.js.bck",
     "rollup:babel": "rollup --config rollup/babel.config.js && sed -i.bck 's/^var /self./' index.js && rm -rf index.js.bck",
+    "rollup:dom": "rollup --config rollup/babel.dom.config.js && sed -i.bck 's/^var /self./' dom.js && rm -rf dom.js.bck",
+    "rollup:es": "rollup --config rollup/es.config.js && sed -i.bck 's/^var /self./' es.js && rm -rf es.js.bck",
+    "rollup:esdom": "rollup --config rollup/es.dom.config.js && sed -i.bck 's/^var /self./' dom.js && rm -rf dom.js.bck",
     "min": "terser index.js --comments='/^!/' -c -m -o min.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "size": "cat min.js | brotli | wc -c && cat es.js | brotli | wc -c",
+    "size": "cat dom.js | brotli | wc -c && cat esdom.js | brotli | wc -c && cat min.js | brotli | wc -c && cat es.js | brotli | wc -c",
     "test": "nyc node test/index.js"
   },
   "keywords": [
@@ -42,11 +44,16 @@
       "import": "./esm/index.js",
       "default": "./cjs/index.js"
     },
+    "./dom": {
+      "import": "./esm/dom.js",
+      "default": "./cjs/dom.js"
+    },
     "./package.json": "./package.json"
   },
   "unpkg": "min.js",
   "dependencies": {
-    "@webreflection/lie": "^0.1.1"
+    "@webreflection/lie": "^0.1.1",
+    "uconnect": "^0.1.1"
   },
   "repository": {
     "type": "git",
