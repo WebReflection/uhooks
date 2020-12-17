@@ -26,7 +26,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "ascjs": "^4.0.3",
@@ -53,7 +53,7 @@
   "unpkg": "min.js",
   "dependencies": {
     "@webreflection/lie": "^0.1.1",
-    "uconnect": "^0.1.1"
+    "uconnect": "^0.1.4"
   },
   "repository": {
     "type": "git",

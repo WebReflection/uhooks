@@ -9,8 +9,6 @@ import {
 
 let observer = null;
 
-const observed = new WeakMap;
-
 const get = node => {
   const {firstChild, nodeType} = node;
   if (nodeType)
@@ -30,17 +28,14 @@ export const hooked = fn => {
       const disconnectable = get(node);
       if (!disconnectable)
         throw 'unobservable';
-      if (!observed.has(disconnectable)) {
-        const handler = {
+      if (!observer)
+        observer = observe();
+      if (!observer.has(disconnectable))
+        observer.connect(disconnectable, {
           disconnected() {
             dropEffect(hook);
           }
-        };
-        observed.set(disconnectable, handler);
-        if (!observer)
-          observer = observe();
-        observer.connect(disconnectable, handler);
-      }
+        });
     }
     return node;
   };
