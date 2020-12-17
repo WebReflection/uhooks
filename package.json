@@ -48,6 +48,14 @@
       "import": "./esm/dom.js",
       "default": "./cjs/dom.js"
     },
+    "./dom.js": {
+      "import": "./esm/dom.js",
+      "default": "./cjs/dom.js"
+    },
+    "./esm/dom.js": {
+      "import": "./esm/dom.js",
+      "default": "./cjs/dom.js"
+    },
     "./package.json": "./package.json"
   },
   "unpkg": "min.js",
