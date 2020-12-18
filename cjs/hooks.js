@@ -5,8 +5,6 @@ let h = null, schedule = new Set;
 
 const hooks = new WeakMap;
 
-const waitTick = new Lie($ => $());
-
 const invoke = effect => {
   const {$, r, h} = effect;
   if (isFunction(r)) {
@@ -38,7 +36,7 @@ exports.different = different;
 const dropEffect = hook => {
   const effects = fx.get(hook);
   if (effects)
-    waitTick.then(() => {
+    wait.then(() => {
       effects.forEach(effect => {
         effect.r();
         effect.r = null;
@@ -71,7 +69,7 @@ const hooked = callback => {
     finally {
       h = p;
       if (effects.length)
-        waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
+        wait.then(effects.forEach.bind(effects.splice(0), invoke));
       if (layoutEffects.length)
         layoutEffects.splice(0).forEach(invoke);
     }
@@ -83,7 +81,7 @@ const reschedule = info => {
   if (!schedule.has(info)) {
     info.e = 1;
     schedule.add(info);
-    waitTick.then(runSchedule);
+    wait.then(runSchedule);
   }
 };
 exports.reschedule = reschedule;
@@ -95,3 +93,6 @@ const update = ({h, c, a, e}) => {
     h.apply(c, a);
 };
 exports.update = update;
+
+const wait = new Lie($ => $());
+exports.wait = wait;

@@ -22,9 +22,6 @@ self.uhooks = (function (exports) {
   var h = null,
       schedule = new Set();
   var hooks = new WeakMap();
-  var waitTick = new Lie(function ($) {
-    return $();
-  });
 
   var invoke = function invoke(effect) {
     var $ = effect.$,
@@ -53,7 +50,7 @@ self.uhooks = (function (exports) {
   }
   var dropEffect = function dropEffect(hook) {
     var effects = fx.get(hook);
-    if (effects) waitTick.then(function () {
+    if (effects) wait.then(function () {
       effects.forEach(function (effect) {
         effect.r();
         effect.r = null;
@@ -91,7 +88,7 @@ self.uhooks = (function (exports) {
         return callback.apply(info.c = this, info.a = arguments);
       } finally {
         h = p;
-        if (effects.length) waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
+        if (effects.length) wait.then(effects.forEach.bind(effects.splice(0), invoke));
         if (layoutEffects.length) layoutEffects.splice(0).forEach(invoke);
       }
     }
@@ -100,7 +97,7 @@ self.uhooks = (function (exports) {
     if (!schedule.has(info)) {
       info.e = 1;
       schedule.add(info);
-      waitTick.then(runSchedule);
+      wait.then(runSchedule);
     }
   };
   var update = function update(_ref) {
@@ -112,6 +109,9 @@ self.uhooks = (function (exports) {
     // re-executed before such schedule happens
     if (e) h.apply(c, a);
   };
+  var wait = new Lie(function ($) {
+    return $();
+  });
 
   var createContext = function createContext(value) {
     return {
@@ -232,6 +232,7 @@ self.uhooks = (function (exports) {
   exports.useReducer = useReducer;
   exports.useRef = useRef;
   exports.useState = useState;
+  exports.wait = wait;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

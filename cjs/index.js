@@ -5,6 +5,7 @@
   exports.hooked = m.hooked;
   exports.dropEffect = m.dropEffect;
   exports.hasEffect = m.hasEffect;
+  exports.wait = m.wait;
 })(require('./hooks.js'));
 (m => {
   exports.createContext = m.createContext;
