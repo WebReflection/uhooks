@@ -122,8 +122,10 @@ comp.increment();
   test = function () {
     const value = useContext(ctx);
     useEffect(() => {
-      if (value === 1)
+      if (value === 1) {
         ctx.provide(value + 1);
+        ctx.provide(value + 1);
+      }
     }, [value]);
   };
   hooked(test)();

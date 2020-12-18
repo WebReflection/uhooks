@@ -1,9 +1,7 @@
 'use strict';
 const Lie = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('@webreflection/lie'));
 
-let a = null, c = null, h = null;
-
-let schedule = new Set;
+let h = null, schedule = new Set;
 
 const hooks = new WeakMap;
 
@@ -50,12 +48,7 @@ const dropEffect = hook => {
 };
 exports.dropEffect = dropEffect;
 
-const getInfo = () => {
-  const info = hooks.get(h);
-  info.a = a;
-  info.c = c;
-  return info;
-};
+const getInfo = () => hooks.get(h);
 exports.getInfo = getInfo;
 
 const hasEffect = hook => fx.has(hook);
@@ -65,18 +58,18 @@ const isFunction = f => typeof f === 'function';
 exports.isFunction = isFunction;
 
 const hooked = callback => {
-  hooks.set(hook, {a, c, h: hook, i: 0, s: []});
+  const info = {h: hook, c: null, a: null, e: 0, i: 0, s: []};
+  hooks.set(hook, info);
   return hook;
   function hook() {
-    const pa = a, pc = c, ph = h;
-    a = arguments;
-    c = this;
+    const p = h;
     h = hook;
+    info.e = info.i = 0;
     try {
-      return callback.apply(c, a);
+      return callback.apply(info.c = this, info.a = arguments);
     }
     finally {
-      a = pa; c = pc; h = ph;
+      h = p;
       if (effects.length)
         waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
       if (layoutEffects.length)
@@ -88,14 +81,17 @@ exports.hooked = hooked;
 
 const reschedule = info => {
   if (!schedule.has(info)) {
+    info.e = 1;
     schedule.add(info);
     waitTick.then(runSchedule);
   }
 };
 exports.reschedule = reschedule;
 
-const update = info => {
-  info.i = 0;
-  info.h.apply(info.c, info.a);
+const update = ({h, c, a, e}) => {
+  // avoid running schedules when the hook is
+  // re-executed before such schedule happens
+  if (e)
+    h.apply(c, a);
 };
 exports.update = update;

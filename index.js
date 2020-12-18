@@ -19,10 +19,8 @@ self.uhooks = (function (exports) {
     }
   };
 
-  var a = null,
-      c = null,
-      h = null;
-  var schedule = new Set();
+  var h = null,
+      schedule = new Set();
   var hooks = new WeakMap();
   var waitTick = new Lie(function ($) {
     return $();
@@ -64,10 +62,7 @@ self.uhooks = (function (exports) {
     });
   };
   var getInfo = function getInfo() {
-    var info = hooks.get(h);
-    info.a = a;
-    info.c = c;
-    return info;
+    return hooks.get(h);
   };
   var hasEffect = function hasEffect(hook) {
     return fx.has(hook);
@@ -76,29 +71,26 @@ self.uhooks = (function (exports) {
     return typeof f === 'function';
   };
   var hooked = function hooked(callback) {
-    hooks.set(hook, {
-      a: a,
-      c: c,
+    var info = {
       h: hook,
+      c: null,
+      a: null,
+      e: 0,
       i: 0,
       s: []
-    });
+    };
+    hooks.set(hook, info);
     return hook;
 
     function hook() {
-      var pa = a,
-          pc = c,
-          ph = h;
-      a = arguments;
-      c = this;
+      var p = h;
       h = hook;
+      info.e = info.i = 0;
 
       try {
-        return callback.apply(c, a);
+        return callback.apply(info.c = this, info.a = arguments);
       } finally {
-        a = pa;
-        c = pc;
-        h = ph;
+        h = p;
         if (effects.length) waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
         if (layoutEffects.length) layoutEffects.splice(0).forEach(invoke);
       }
@@ -106,13 +98,19 @@ self.uhooks = (function (exports) {
   };
   var reschedule = function reschedule(info) {
     if (!schedule.has(info)) {
+      info.e = 1;
       schedule.add(info);
       waitTick.then(runSchedule);
     }
   };
-  var update = function update(info) {
-    info.i = 0;
-    info.h.apply(info.c, info.a);
+  var update = function update(_ref) {
+    var h = _ref.h,
+        c = _ref.c,
+        a = _ref.a,
+        e = _ref.e;
+    // avoid running schedules when the hook is
+    // re-executed before such schedule happens
+    if (e) h.apply(c, a);
   };
 
   var createContext = function createContext(value) {

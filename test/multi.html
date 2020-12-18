@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script type="module">
+    import(
+      /^(?:localhost|[::1]|127(?:.d+){3})$/.test(location.hostname) ?
+      '../esm/index.js' :
+      'https://unpkg.com/uland?module'
+    )
+    .then(({hooked, useState}) => {
+      const ok = document.createElement('button');
+      ok.textContent = 'true';
+
+      const nope = document.createElement('button');
+      nope.textContent = 'false';
+
+      const comp = hooked(() => {
+        const [state, setState] = useState(false);
+
+        function flipTrue (ev) {
+          console.log('flipping to true');
+          ev.preventDefault();
+          Promise.resolve().then(render);
+          setState(true);
+        }
+
+        function flipFalse (ev) {
+          console.log('flipping to false');
+          ev.preventDefault();
+          Promise.resolve().then(render);
+          setState(false);
+        }
+
+        console.log('state', state);
+
+        if (state) {
+          ok.onclick = flipFalse;
+          return ok;
+        }
+
+        if (!state) {
+          nope.onclick = flipTrue;
+          return nope;
+        }
+      });
+
+      const render = () => {
+        console.log('rendering');
+        document.body.textContent = '';
+        document.body.append(comp());
+      };
+
+      render();
+
+    });
+    </script>
+</head>
+<body class="app"></body>
+</html>

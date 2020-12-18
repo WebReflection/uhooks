@@ -1,8 +1,6 @@
 import Lie from '@webreflection/lie';
 
-let a = null, c = null, h = null;
-
-let schedule = new Set;
+let h = null, schedule = new Set;
 
 const hooks = new WeakMap;
 
@@ -44,30 +42,25 @@ export const dropEffect = hook => {
     });
 };
 
-export const getInfo = () => {
-  const info = hooks.get(h);
-  info.a = a;
-  info.c = c;
-  return info;
-};
+export const getInfo = () => hooks.get(h);
 
 export const hasEffect = hook => fx.has(hook);
 
 export const isFunction = f => typeof f === 'function';
 
 export const hooked = callback => {
-  hooks.set(hook, {a, c, h: hook, i: 0, s: []});
+  const info = {h: hook, c: null, a: null, e: 0, i: 0, s: []};
+  hooks.set(hook, info);
   return hook;
   function hook() {
-    const pa = a, pc = c, ph = h;
-    a = arguments;
-    c = this;
+    const p = h;
     h = hook;
+    info.e = info.i = 0;
     try {
-      return callback.apply(c, a);
+      return callback.apply(info.c = this, info.a = arguments);
     }
     finally {
-      a = pa; c = pc; h = ph;
+      h = p;
       if (effects.length)
         waitTick.then(effects.forEach.bind(effects.splice(0), invoke));
       if (layoutEffects.length)
@@ -78,12 +71,15 @@ export const hooked = callback => {
 
 export const reschedule = info => {
   if (!schedule.has(info)) {
+    info.e = 1;
     schedule.add(info);
     waitTick.then(runSchedule);
   }
 };
 
-export const update = info => {
-  info.i = 0;
-  info.h.apply(info.c, info.a);
+export const update = ({h, c, a, e}) => {
+  // avoid running schedules when the hook is
+  // re-executed before such schedule happens
+  if (e)
+    h.apply(c, a);
 };
