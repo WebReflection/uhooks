@@ -234,7 +234,7 @@ self.uhooks = (function (exports) {
   exports.useState = useState;
   exports.wait = wait;
 
-  Object.defineProperty(exports, '__esModule', { value: true });
+  
 
   return exports;
 
