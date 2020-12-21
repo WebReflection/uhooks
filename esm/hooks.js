@@ -17,7 +17,12 @@ const invoke = effect => {
 const runSchedule = () => {
   const previous = schedule;
   schedule = new Set;
-  previous.forEach(update);
+  previous.forEach(({h, c, a, e}) => {
+    // avoid running schedules when the hook is
+    // re-executed before such schedule happens
+    if (e)
+      h.apply(c, a);
+  });
 };
 
 export const fx = new WeakMap;
@@ -73,13 +78,6 @@ export const reschedule = info => {
     schedule.add(info);
     wait.then(runSchedule);
   }
-};
-
-export const update = ({h, c, a, e}) => {
-  // avoid running schedules when the hook is
-  // re-executed before such schedule happens
-  if (e)
-    h.apply(c, a);
 };
 
 export const wait = new Lie($ => $());

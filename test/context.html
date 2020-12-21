@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>uhooks</title>
+  <script type="module">
+  import(
+    /^(?:localhost|[::1]|127(?:.d+){3})$/.test(location.hostname) ?
+    '../esm/index.js' :
+    'https://unpkg.com/uhooks?module'
+  )
+  .then(({hooked, createContext, useContext}) => {
+    const context = createContext(false);
+
+    const toggle = (element, context) => hooked(() => {
+      const value = useContext(context);
+      element.style.background = value ? 'black' : 'white';
+    })();
+
+    toggle(document.body, context);
+
+    button.addEventListener('click', () => {
+      context.provide(!context.value);
+    });
+  });
+  </script>
+</head>
+<body>
+  <button id="button">click me</button>
+</body>
+</html>

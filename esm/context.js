@@ -1,4 +1,4 @@
-import {getInfo, update} from './hooks.js';
+import {getInfo} from './hooks.js';
 
 export const createContext = value => ({
   _: new Set,
@@ -16,6 +16,8 @@ function provide(newValue) {
   if (value !== newValue) {
     this._ = new Set;
     this.value = newValue;
-    _.forEach(update);
+    _.forEach(({h, c, a}) => {
+      h.apply(c, a);
+    });
   }
 }
