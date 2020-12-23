@@ -71,7 +71,7 @@ comp.increment();
   };
   hooked(test)();
 
-  test = function () {
+  test = hooked(function () {
     const [value, update] = useState(() => 0);
     let i = 0, y = 1;
     useLayoutEffect(() => {
@@ -84,8 +84,9 @@ comp.increment();
     });
     if (value === 0)
       update(1);
-  };
-  hooked(test)();
+  });
+  test();
+  test();
 
   let i = 0;
   test = hooked(function () {
