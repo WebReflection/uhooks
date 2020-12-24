@@ -168,19 +168,21 @@ self.uhooks = (function (exports) {
           s = info.s,
           h = info.h;
       var call = i === s.length;
+      info.i++;
 
       if (call) {
         if (!fx.has(h)) fx.set(h, new Set());
-        s.push({
+        s[i] = {
           $: callback,
           _: guards,
           r: null,
           h: h
-        });
+        };
       }
 
-      var effect = s[info.i++];
-      if (call || !guards || guards.some(different, effect._)) stack.push(effect);
+      if (call || !guards || guards.some(different, s[i]._)) stack.push(s[i]);
+      s[i].$ = callback;
+      s[i]._ = guards;
     };
   };
 
