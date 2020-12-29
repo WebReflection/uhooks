@@ -19,7 +19,7 @@ const hooked = callback => {
   return hook;
   async function hook() {
     return await $hook.apply(this, arguments);
-  };
+  }
 };
 exports.hooked = hooked;
 
