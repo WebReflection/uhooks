@@ -13,6 +13,7 @@ _micro hooks_ is a simplified _~0.8K_ alternative to [augmentor](https://github.
   * `useEffect` is also applied asynchronously
   * there are no extra options whatsoever so it's less configurable
   * there is no `contextual` export, as every hook can have a context passed along, whenever it's needed, or a good idea at all
+  * exports from `uhooks/async` allows `hooked(async () => { ... })` definitions
 
 The reason for this module to exist is to explore a slightly different pattern that is *not* stack-based, but that should perform overall better in real-world use cases, thanks to its smaller size and its reduced amount of invokes applied in bulks.
 
@@ -22,12 +23,14 @@ The reason for this module to exist is to explore a slightly different pattern t
 // const {...} = require('uhooks'); for CommonJS
 
 import {
-  hooked, dropEffect, hasEffect,
+  hooked, wait,
+  dropEffect, hasEffect,
   createContext, useContext,
   useCallback, useMemo,
   useEffect, useLayoutEffect,
-  useReducer, useState, useRef
-} from 'uhooks';
+  useReducer, useState,
+  useRef
+} from 'uhooks'; // or 'uhooks/async'
 
 const Counter = (start) => {
   const [count, setCount] = useState(start);

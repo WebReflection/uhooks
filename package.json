@@ -4,13 +4,14 @@
   "description": "micro hooks: a minimalistic client/server hooks' implementation",
   "main": "./cjs/index.js",
   "scripts": {
-    "build": "npm run cjs && npm run rollup:babel && npm run rollup:es && npm run min && npm run test && npm run size",
+    "build": "npm run cjs && npm run rollup:babel && npm run rollup:es && npm run rollup:async && npm run min && npm run test && npm run size",
     "cjs": "ascjs --no-default esm cjs",
+    "rollup:async": "rollup --config rollup/async.config.js && sed -i.bck 's/^var /self./; s/Object.defineProperty[^)]*).//' async.js && rm -rf async.js.bck",
     "rollup:es": "rollup --config rollup/es.config.js && sed -i.bck 's/^var /self./; s/Object.defineProperty[^)]*).//' es.js && rm -rf es.js.bck",
     "rollup:babel": "rollup --config rollup/babel.config.js && sed -i.bck 's/^var /self./; s/Object.define[^;]*;//' index.js && rm -rf index.js.bck",
     "min": "terser index.js --comments='/^!/' -c -m -o min.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "size": "cat min.js | brotli | wc -c && cat es.js | brotli | wc -c",
+    "size": "echo 'async ES6' && cat async.js | brotli | wc -c && echo '' && echo 'sync ES5 / ES6' && cat min.js | brotli | wc -c && cat es.js | brotli | wc -c",
     "test": "nyc node test/index.js"
   },
   "keywords": [
@@ -41,6 +42,10 @@
     ".": {
       "import": "./esm/index.js",
       "default": "./cjs/index.js"
+    },
+    "./async": {
+      "import": "./esm/async.js",
+      "default": "./cjs/async.js"
     },
     "./package.json": "./package.json"
   },
