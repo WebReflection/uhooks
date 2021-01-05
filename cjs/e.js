@@ -4,11 +4,11 @@ const {hooked, useRef, useState} = ((h, o, O, K) => ({
   hooked(f) {
     const k = {i: 0, s: []};
     return function H() {
-      const [a, b, c, d] = [h, o, O, K];
+      const [p, r, e, v] = [h, o, O, K];
       [h, o, O, K] = [H, this, arguments, k];
       K.i = 0;
       try { return f.apply(o, O); }
-      finally { [h, o, O, K] = [a, b, c, d]; }
+      finally { [h, o, O, K] = [p, r, e, v]; }
     };
   },
   useRef(current) {
