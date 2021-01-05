@@ -14,6 +14,7 @@ _micro hooks_ is a simplified _~0.8K_ alternative to [augmentor](https://github.
   * there are no extra options whatsoever so it's less configurable
   * there is no `contextual` export, as every hook can have a context passed along, whenever it's needed, or a good idea at all
   * exports from `uhooks/async` allows `hooked(async () => { ... })` definitions
+  * the [uhooks/e](./esm/e.js) export provides an *essential* utility with `useState` and `useRef`, usable in micro-controllers or whenever synchronous, simplified, hooks are enough, and code size/memory constraints are relevant.
 
 The reason for this module to exist is to explore a slightly different pattern that is *not* stack-based, but that should perform overall better in real-world use cases, thanks to its smaller size and its reduced amount of invokes applied in bulks.
 

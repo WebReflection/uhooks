@@ -12,7 +12,7 @@
     "min": "terser index.js --comments='/^!/' -c -m -o min.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "size": "echo 'async ES6' && cat async.js | brotli | wc -c && echo '' && echo 'sync ES5 / ES6' && cat min.js | brotli | wc -c && cat es.js | brotli | wc -c",
-    "test": "nyc node test/index.js"
+    "test": "nyc node test/e.js && nyc node test/index.js"
   },
   "keywords": [
     "hooks",
@@ -46,6 +46,10 @@
     "./async": {
       "import": "./esm/async.js",
       "default": "./cjs/async.js"
+    },
+    "./e": {
+      "import": "./esm/e.js",
+      "default": "./cjs/e.js"
     },
     "./package.json": "./package.json"
   },
