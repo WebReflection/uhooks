@@ -1,9 +1,7 @@
 'use strict';
 const Lie = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('@webreflection/lie'));
 
-let h = null, schedule = new Set;
-
-const hooks = new WeakMap;
+let info = null, schedule = new Set;
 
 const invoke = effect => {
   const {$, r, h} = effect;
@@ -51,7 +49,7 @@ const dropEffect = hook => {
 };
 exports.dropEffect = dropEffect;
 
-const getInfo = () => hooks.get(h);
+const getInfo = () => info;
 exports.getInfo = getInfo;
 
 const hasEffect = hook => fx.has(hook);
@@ -61,18 +59,17 @@ const isFunction = f => typeof f === 'function';
 exports.isFunction = isFunction;
 
 const hooked = callback => {
-  const info = {h: hook, c: null, a: null, e: 0, i: 0, s: []};
-  hooks.set(hook, info);
+  const current = {h: hook, c: null, a: null, e: 0, i: 0, s: []};
   return hook;
   function hook() {
-    const p = h;
-    h = hook;
-    info.e = info.i = 0;
+    const prev = info;
+    info = current;
+    current.e = current.i = 0;
     try {
-      return callback.apply(info.c = this, info.a = arguments);
+      return callback.apply(current.c = this, current.a = arguments);
     }
     finally {
-      h = p;
+      info = prev;
       if (effects.length)
         wait.then(effects.forEach.bind(effects.splice(0), invoke));
       if (layoutEffects.length)

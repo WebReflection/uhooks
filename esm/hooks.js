@@ -1,8 +1,6 @@
 import Lie from '@webreflection/lie';
 
-let h = null, schedule = new Set;
-
-const hooks = new WeakMap;
+let info = null, schedule = new Set;
 
 const invoke = effect => {
   const {$, r, h} = effect;
@@ -45,25 +43,24 @@ export const dropEffect = hook => {
     });
 };
 
-export const getInfo = () => hooks.get(h);
+export const getInfo = () => info;
 
 export const hasEffect = hook => fx.has(hook);
 
 export const isFunction = f => typeof f === 'function';
 
 export const hooked = callback => {
-  const info = {h: hook, c: null, a: null, e: 0, i: 0, s: []};
-  hooks.set(hook, info);
+  const current = {h: hook, c: null, a: null, e: 0, i: 0, s: []};
   return hook;
   function hook() {
-    const p = h;
-    h = hook;
-    info.e = info.i = 0;
+    const prev = info;
+    info = current;
+    current.e = current.i = 0;
     try {
-      return callback.apply(info.c = this, info.a = arguments);
+      return callback.apply(current.c = this, current.a = arguments);
     }
     finally {
-      h = p;
+      info = prev;
       if (effects.length)
         wait.then(effects.forEach.bind(effects.splice(0), invoke));
       if (layoutEffects.length)

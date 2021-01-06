@@ -19,9 +19,8 @@ self.uhooks = (function (exports) {
     }
   };
 
-  var h = null,
+  var info = null,
       schedule = new Set();
-  var hooks = new WeakMap();
 
   var invoke = function invoke(effect) {
     var $ = effect.$,
@@ -67,7 +66,7 @@ self.uhooks = (function (exports) {
     });
   };
   var getInfo = function getInfo() {
-    return hooks.get(h);
+    return info;
   };
   var hasEffect = function hasEffect(hook) {
     return fx.has(hook);
@@ -76,7 +75,7 @@ self.uhooks = (function (exports) {
     return typeof f === 'function';
   };
   var hooked = function hooked(callback) {
-    var info = {
+    var current = {
       h: hook,
       c: null,
       a: null,
@@ -84,18 +83,17 @@ self.uhooks = (function (exports) {
       i: 0,
       s: []
     };
-    hooks.set(hook, info);
     return hook;
 
     function hook() {
-      var p = h;
-      h = hook;
-      info.e = info.i = 0;
+      var prev = info;
+      info = current;
+      current.e = current.i = 0;
 
       try {
-        return callback.apply(info.c = this, info.a = arguments);
+        return callback.apply(current.c = this, current.a = arguments);
       } finally {
-        h = p;
+        info = prev;
         if (effects.length) wait.then(effects.forEach.bind(effects.splice(0), invoke));
         if (layoutEffects.length) layoutEffects.splice(0).forEach(invoke);
       }
