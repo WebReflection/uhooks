@@ -14,6 +14,7 @@ export default {
     terser()
   ],
   output: {
+    esModule: false,
     exports: 'named',
     file: './async.js',
     format: 'iife',

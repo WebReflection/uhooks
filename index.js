@@ -235,8 +235,6 @@ self.uhooks = (function (exports) {
   exports.useState = useState;
   exports.wait = wait;
 
-  
-
   return exports;
 
 }({}));
