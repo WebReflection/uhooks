@@ -6,6 +6,12 @@
 
 <sup>**Social Media Photo by [Tatiana Rodriguez](https://unsplash.com/@tata186) on [Unsplash](https://unsplash.com/)**</sup>
 
+### 📣 Community Announcement
+
+Please ask questions in the [dedicated discussions repository](https://github.com/WebReflection/discussions), to help the community around this project grow ♥
+
+---
+
 _micro hooks_ is a simplified _~0.8K_ alternative to [augmentor](https://github.com/WebReflection/augmentor#readme), with the following differences:
 
   * `hooked(fn)` is the *augmentor* entry point equivalent
