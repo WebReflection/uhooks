@@ -56,3 +56,12 @@ const comp2 = hooked(Counter)(1);
 // logs 2
 comp1.increment();
 ```
+
+### Extras
+
+These hooks are reachable via `uhooks/extras`, and can be handy in various occasions:
+
+  * `useUpdatedRef(value)` it's like `useRef`, except it updates the `current` value each time.
+  * `useMutationObserver(options)` observe `options.ref` or a new *ref* accordingly, with the `options` properties, and it invokes the `options.mutations(records)` whenever mutations happen.
+  * `useSWR(key, fetcher, options)` is a simplified version of [vercel's useSWR](https://github.com/vercel/swr). The `options` can have `initialData` and a `fetcher`, but other features might land soon.
+  * `useDebugValue(data, transform)` is a simplified version of its *React* counterpart. It simply logs `data` through an optional `transform` callback.
