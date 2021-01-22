@@ -51,6 +51,10 @@
       "import": "./esm/e.js",
       "default": "./cjs/e.js"
     },
+    "./extras": {
+      "import": "./esm/extras.js",
+      "default": "./cjs/extras.js"
+    },
     "./package.json": "./package.json"
   },
   "unpkg": "min.js",
