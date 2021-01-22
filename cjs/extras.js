@@ -76,3 +76,13 @@ const useSWR = (key, fetcher, options) => {
   };
 };
 exports.useSWR = useSWR;
+
+/**
+ * A simplified version of React `useDebugValue`
+ * @param {any} data data to show
+ * @param {function?} callback callback to transform data
+ */
+const useDebugValue = (data, callback = data => data) => {
+  console.log('%cµhooks', 'font-weight:bold', callback(data));
+};
+exports.useDebugValue = useDebugValue;
