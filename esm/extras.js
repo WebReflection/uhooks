@@ -79,5 +79,5 @@ export const useSWR = (key, fetcher, options) => {
  * @param {function?} callback callback to transform data
  */
 export const useDebugValue = (data, callback = data => data) => {
-  console.log('%cµhooks', 'font-weight:bold', callback(data));
+  console.log('%cµhooks:', 'font-weight:bold', callback(data));
 };

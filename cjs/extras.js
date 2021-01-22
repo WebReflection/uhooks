@@ -83,6 +83,6 @@ exports.useSWR = useSWR;
  * @param {function?} callback callback to transform data
  */
 const useDebugValue = (data, callback = data => data) => {
-  console.log('%cµhooks', 'font-weight:bold', callback(data));
+  console.log('%cµhooks:', 'font-weight:bold', callback(data));
 };
 exports.useDebugValue = useDebugValue;
