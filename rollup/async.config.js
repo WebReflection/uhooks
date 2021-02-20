@@ -7,7 +7,7 @@ export default {
   plugins: [
     includePaths({
       include: {
-        '@webreflection/lie': 'esm/promise.js'
+        '@webreflection/lie': 'node_modules/@ungap/degap/promise.js'
       }
     }),
     nodeResolve(),

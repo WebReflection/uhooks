@@ -1,6 +1,6 @@
 # <em>µ</em>hooks
 
-[![Build Status](https://travis-ci.com/WebReflection/uhooks.svg?branch=main)](https://travis-ci.com/WebReflection/uhooks) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/uhooks/badge.svg?branch=main)](https://coveralls.io/github/WebReflection/uhooks?branch=main)
+[![Build Status](https://travis-ci.com/WebReflection/uhooks.svg?branch=main)](https://travis-ci.com/WebReflection/uhooks) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/uhooks/badge.svg?branch=main)](https://coveralls.io/github/WebReflection/uhooks?branch=main) [![CSP strict](https://webreflection.github.io/csp/strict.svg)](https://webreflection.github.io/csp/#-csp-strict)
 
 ![hooks](./uhooks.jpg)
 
