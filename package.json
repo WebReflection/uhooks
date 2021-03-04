@@ -4,14 +4,15 @@
   "description": "micro hooks: a minimalistic client/server hooks' implementation",
   "main": "./cjs/index.js",
   "scripts": {
-    "build": "npm run cjs && npm run rollup:babel && npm run rollup:es && npm run rollup:async && npm run min && npm run test && npm run size",
+    "build": "npm run cjs && npm run espruino && npm run rollup:babel && npm run rollup:es && npm run rollup:async && npm run min && npm run test && npm run size",
     "cjs": "ascjs --no-default esm cjs",
+    "espruino": "node -e 'console.log(require(`fs`).readFileSync(`esm/e.js`).toString().replace(/^ *\\/\\/.*\\n/gm,``).replace(/export.*/,``).trim())'>e.js",
     "rollup:async": "rollup --config rollup/async.config.js && sed -i.bck 's/^var /self./' async.js && rm -rf async.js.bck",
     "rollup:es": "rollup --config rollup/es.config.js && sed -i.bck 's/^var /self./' es.js && rm -rf es.js.bck",
     "rollup:babel": "rollup --config rollup/babel.config.js && sed -i.bck 's/^var /self./' index.js && rm -rf index.js.bck",
     "min": "terser index.js --comments='/^!/' -c -m -o min.js",
     "coveralls": "c8 report --reporter=text-lcov | coveralls",
-    "size": "echo 'async ES6' && cat async.js | brotli | wc -c && echo '' && echo 'sync ES5 / ES6' && cat min.js | brotli | wc -c && cat es.js | brotli | wc -c",
+    "size": "echo 'async ES6' && cat async.js | brotli | wc -c && echo '' && echo 'sync ES5 / ES6' && cat min.js | brotli | wc -c && cat es.js | brotli | wc -c && echo '' && echo 'espruino' && cat e.js | brotli | wc -c",
     "test": "c8 node test/e.js && c8 node test/index.js"
   },
   "keywords": [
