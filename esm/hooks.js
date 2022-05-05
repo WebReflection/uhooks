@@ -38,6 +38,7 @@ export const dropEffect = hook => {
       effects.forEach(effect => {
         effect.r();
         effect.r = null;
+        effect.d = true;
       });
       effects.clear();
     });

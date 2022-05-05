@@ -61,6 +61,7 @@ self.uhooks = (function (exports) {
       effects.forEach(function (effect) {
         effect.r();
         effect.r = null;
+        effect.d = true;
       });
       effects.clear();
     });
@@ -174,11 +175,12 @@ self.uhooks = (function (exports) {
           $: callback,
           _: guards,
           r: null,
+          d: false,
           h: h
         };
       }
 
-      if (call || !guards || guards.some(different, s[i]._)) stack.push(s[i]);
+      if (call || !guards || s[i].d || guards.some(different, s[i]._)) stack.push(s[i]);
       s[i].$ = callback;
       s[i]._ = guards;
     };

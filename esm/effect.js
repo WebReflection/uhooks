@@ -8,9 +8,9 @@ const createEffect = stack => (callback, guards) => {
   if (call) {
     if (!fx.has(h))
       fx.set(h, new Set);
-    s[i] = {$: callback, _: guards, r: null, h};
+    s[i] = {$: callback, _: guards, r: null, d: false, h};
   }
-  if (call || !guards || guards.some(different, s[i]._))
+  if (call || !guards || s[i].d || guards.some(different, s[i]._))
     stack.push(s[i]);
   s[i].$ = callback;
   s[i]._ = guards;
