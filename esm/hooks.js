@@ -1,5 +1,3 @@
-import Lie from '@webreflection/lie';
-
 let info = null, schedule = new Set;
 
 const invoke = effect => {
@@ -78,4 +76,4 @@ export const reschedule = info => {
   }
 };
 
-export const wait = new Lie($ => $());
+export const wait = Promise.resolve();

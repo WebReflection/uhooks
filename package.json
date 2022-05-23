@@ -4,15 +4,15 @@
   "description": "micro hooks: a minimalistic client/server hooks' implementation",
   "main": "./cjs/index.js",
   "scripts": {
-    "build": "npm run cjs && npm run espruino && npm run rollup:babel && npm run rollup:es && npm run rollup:async && npm run min && npm run test && npm run size",
+    "build": "npm run cjs && npm run espruino && npm run rollup:index && npm run rollup:es && npm run rollup:async && npm run rollup:esm && npm run test && npm run size",
     "cjs": "ascjs --no-default esm cjs",
     "espruino": "node -e 'console.log(require(`fs`).readFileSync(`esm/e.js`).toString().replace(/^ *\\/\\/.*\\n/gm,``).replace(/export.*/,``).trim())'>e.js",
     "rollup:async": "rollup --config rollup/async.config.js && sed -i.bck 's/^var /self./' async.js && rm -rf async.js.bck",
+    "rollup:esm": "rollup --config rollup/esm.config.js",
     "rollup:es": "rollup --config rollup/es.config.js && sed -i.bck 's/^var /self./' es.js && rm -rf es.js.bck",
-    "rollup:babel": "rollup --config rollup/babel.config.js && sed -i.bck 's/^var /self./' index.js && rm -rf index.js.bck",
-    "min": "terser index.js --comments='/^!/' -c -m -o min.js",
+    "rollup:index": "rollup --config rollup/index.config.js && sed -i.bck 's/^var /self./' index.js && rm -rf index.js.bck",
     "coveralls": "c8 report --reporter=text-lcov | coveralls",
-    "size": "echo 'async ES6' && cat async.js | brotli | wc -c && echo '' && echo 'sync ES5 / ES6' && cat min.js | brotli | wc -c && cat es.js | brotli | wc -c && echo '' && echo 'espruino' && cat e.js | brotli | wc -c",
+    "size": "echo 'async ES6' && cat async.js | brotli | wc -c && echo '' && echo 'sync ESM / ES6' && cat esm.js | brotli | wc -c && cat es.js | brotli | wc -c && echo '' && echo 'espruino' && cat e.js | brotli | wc -c",
     "test": "c8 node test/e.js && c8 node test/index.js"
   },
   "keywords": [
@@ -25,18 +25,13 @@
   "author": "Andrea Giammarchi",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "@ungap/degap": "^0.2.6",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@ungap/degap": "^0.2.8",
     "ascjs": "^5.0.1",
-    "c8": "^7.7.3",
-    "coveralls": "^3.1.0",
-    "rollup": "^2.52.3",
-    "rollup-plugin-includepaths": "^0.2.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "terser": "^5.7.0"
+    "c8": "^7.11.3",
+    "coveralls": "^3.1.1",
+    "rollup": "^2.74.1",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "module": "./esm/index.js",
   "type": "module",
@@ -59,10 +54,7 @@
     },
     "./package.json": "./package.json"
   },
-  "unpkg": "min.js",
-  "dependencies": {
-    "@webreflection/lie": "^0.1.1"
-  },
+  "unpkg": "esm.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WebReflection/uhooks.git"

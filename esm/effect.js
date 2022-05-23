@@ -14,6 +14,7 @@ const createEffect = stack => (callback, guards) => {
     stack.push(s[i]);
   s[i].$ = callback;
   s[i]._ = guards;
+  s[i].d = false;
 };
 
 export const useEffect = createEffect(effects);

@@ -1,6 +1,4 @@
 'use strict';
-const Lie = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('@webreflection/lie'));
-
 let info = null, schedule = new Set;
 
 const invoke = effect => {
@@ -89,5 +87,5 @@ const reschedule = info => {
 };
 exports.reschedule = reschedule;
 
-const wait = new Lie($ => $());
+const wait = Promise.resolve();
 exports.wait = wait;

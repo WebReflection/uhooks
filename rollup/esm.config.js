@@ -8,10 +8,7 @@ export default {
     terser()
   ],
   output: {
-    esModule: false,
-    exports: 'named',
-    file: './es.js',
-    format: 'iife',
-    name: 'uhooks'
+    file: './esm.js',
+    format: 'module'
   }
 };
